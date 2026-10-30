@@ -262,14 +262,32 @@ Write a clear, useful answer with source-page citations.
 
 
 # -------------------- SIDEBAR --------------------
-
+# --- API KEY CONFIGURATION SAFETY GATE ---
 with st.sidebar:
+    st.title("🔑 Configuration")
+    st.markdown("This app uses your own API key to protect rate limits.")
+    user_key = st.text_input("Enter your Gemini API Key", type="password")
+    st.markdown("[Get a free Gemini API Key here](https://google.com)")
+    st.divider()
+
+
     st.header("📄 Your document")
 
     uploaded_file = st.file_uploader(
         "Upload a text-based PDF",
         type=["pdf"]
     )
+
+if not user_key:
+    st.info("👋 Welcome! Please enter your Gemini API Key in the left sidebar to unlock the PDF Explorer.")
+    st.stop()
+
+# Set the key to your environment variables
+import os
+os.environ["GEMINI_API_KEY"] = user_key
+
+with st.sidebar:
+    st.header("📄 Your document")
 
     if uploaded_file:
         if st.button("Process PDF", type="primary", use_container_width=True):
